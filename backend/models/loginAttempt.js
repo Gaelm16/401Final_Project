@@ -1,10 +1,19 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const loginAttemptSchema = new mognnose.Schema({
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+const loginAttemptSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
+    },
+    loginTime: {
+        type: Date
+    },
+    logOutTime: {
+        type: Date
+    }
 },
-    {timestamps: true}
+   
 )
 
 const Attempt = mongoose.model("Login_Attempt", loginAttemptSchema)

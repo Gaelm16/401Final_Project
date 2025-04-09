@@ -1,15 +1,13 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const mongoose = require('mongoose');
-const userRoutes = require('./routes/userRoutes')
+const userRoutes = require('./routes/userRoutes');
 const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
 app.use(cors());
 app.use(express.json());
@@ -22,7 +20,20 @@ app.use(cors({
     credentials: true,
 }));
 
-mongoose.connect(process.env.DATABASE_URL, () => console.log('database connected'));
+
+const connectToMongo = async () => {
+    try {
+        mongoose.set('strictQuery', false);
+        mongoose.connect(process.env.DATABASE_URL);
+        console.log('Mongo connected');
+    }
+    catch(error) {
+        console.log(error);
+        process.exit();
+    }
+}
+
+connectToMongo();
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
