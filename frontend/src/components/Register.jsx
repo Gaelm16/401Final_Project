@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router';
 import Navbar from './Navbar';
-// import {AuthContext} from '../../UserContext'
+import { AuthContext } from '../UserContext';
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 
@@ -12,38 +12,23 @@ const Register = () => {
     const [showModal, setShowModal] = useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
 
-    // const {getLoggedIn} = useContext(AuthContext)
+    const {getLoggedIn} = useContext(AuthContext);
 
-    // const signUp = async(e) => {
-    //     e.preventDefault()
+    const signUp = async(e) => {
+        e.preventDefault()
 
-    //     try{
-    //         const data = {userName, passWord}
-    //         await axios.post('http://localhost:4000/register', data, {credential: 'include', withCredentials: true})
-    //         getLoggedIn();
+        try{
+            const data = {userName, passWord}
+            await axios.post('http://localhost:5173/register', data, {credential: 'include', withCredentials: true})
+            getLoggedIn();
 
-    //     } catch(err) {
-    //         console.log(err);
-    //     }
+        } catch(err) {
+            console.log(err);
+        }
 
-    //     setUserEmail('');
-    //     setPassWord('');
-    // }
-
-    // const isValidPassword = (password) => {
-    //     const lengthCheck = /.{8,}/;
-    //     const uppercaseCheck = /[A-Z]/;
-    //     const lowercaseCheck = /[a-z]/;
-    //     const specialCharCheck = /[!@#$%^&*(),.?":{}|<>]/;
-      
-    //     return (
-    //       lengthCheck.test(password) &&
-    //       uppercaseCheck.test(password) &&
-    //       lowercaseCheck.test(password) &&
-    //       specialCharCheck.test(password)
-    //     );
-    //   };
-
+        setUserEmail('');
+        setPassWord('');
+    }
 
     // Function to check whether a new user's password meets the requirements
     const validatePassword = (e) => {
@@ -69,7 +54,8 @@ const Register = () => {
         }
         
         console.log(validationErrors);
-        setValidationErrors([]);
+        if(validationErrors.length > 0) setShowModal(true);
+        // setValidationErrors([]);
         return;
       };
     
@@ -113,17 +99,26 @@ const Register = () => {
                 </div>
             </form>
 
+            {/* Modal to report password validation errors */}
             {showModal && (
                 <div className="modal">
-                <div className="modal-content">
-                    <h3>Password Requirements Not Met</h3>
+                    <div className="modal-content">
                     <ul>
-                    {validationErrors.map((err, index) => (
-                        <li key={index}>{err}</li>
-                    ))}
+                        {validationErrors.length > 0 ? (
+                            <>
+                            {validationErrors.map((err, index) => (
+                                <li className='list' key={index}>{err}</li>
+                            ))}
+                            </>
+                        ) : (
+                            <p>No errors — this shouldn't show.</p>
+                        )}
                     </ul>
-                    <button onClick={() => setShowModal(false)}>Close</button>
-                </div>
+                        <button className='button' onClick={() => {
+                            setShowModal(false) 
+                            setValidationErrors([])} 
+                        }>Close</button>
+                    </div>
                 </div>
             )}
         </div>  

@@ -1,14 +1,17 @@
-import { useState } from 'react'
+import {Routes, Route} from 'react-router';
 import './App.css'
-import LoginForm from './components/Login';
 import Navbar from './components/Navbar';
+import DashBoard from './components/Dashboard';
+import LoginForm from './components/Login';
+import Register from './components/Login';
+import Root from './components/root';
 
 function App() {
 
   return (
-    <div>
-      <LoginForm/>
-    </div>
+      <div>
+        <Root/>
+      </div>
   )
 }
 

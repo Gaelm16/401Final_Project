@@ -133,10 +133,68 @@ button:focus-visible {
 
 .modal-content {
   margin: 20% auto;
-  padding: 20px;
+  /* padding: 20px; */
   width: 300px;
   background-color: white;
   border-radius: 8px;
   text-align: left;
+  color: black;
+}
+
+.modal-content ul{
+  font-size: 36px;
+  text-align: center;
+  color: black;
+  height: 100% ;
+}
+
+.modal-content .list{
+  margin: 20px;
+  padding: 10px;
+  font-size: 15px;
+  height: 20px;
+  color:black;
+}
+
+.modal .button{
+  margin: 20px;
+  /* padding-top: 10px; */
+}
+
+/* NAVBAR STLYING */
+nav{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  z-index: 100;
+}
+
+
+nav ul{
+  display: flex;
+}
+
+/*
+nav ul li{
+  list-style: none;
+  color:green;
+} */
+
+nav ul li {
+  position: relative;
+  top:100%;
+  left: 0;
+  height: 20px;
+  font-size: 18px;
+  text-decoration: none;
+  color:none;
+  margin-left: 40px;
+  border-radius: 0.5rem;
 }
 

@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router';
 export const AuthContext = createContext();
 
 const UserContext = ({children}) => {
-    const [loggedIn, setloggedIn] = useState(true);
-    const [user, setUser] = useState();
+    const [isLoggedIn, setIsloggedIn] = useState(false);
+    const [user, setUser] = useState(null);
     
     let navigate = useNavigate();
 
     const getloggedIn = async () => {
         const loggedInResponse = await axios.get('http://localhost:4000/loggedIn');
-        setloggedIn(loggedInResponse.data);
+        setIsloggedIn(loggedInResponse.data);
     }
 
     const logOut = async() => {
@@ -26,7 +26,7 @@ const UserContext = ({children}) => {
     },[])
     
     return (
-        <AuthContext.Provider value={{loggedIn, setloggedIn, user, setUser}}>
+        <AuthContext.Provider value={{isLoggedIn, setIsloggedIn, user, setUser, logOut}}>
             {children}
         </AuthContext.Provider>
     )

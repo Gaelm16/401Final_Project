@@ -5,47 +5,6 @@
   text-align: center;
 }
 
-/* NAVBAR */
-.nav{
-  height: 5rem;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color:#141d26;
-  position: relative;
-  z-index: 1;
-  box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.19);
-}
-.nav-center {
-  width: 90vw;
-}
-.nav-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-}
-
-.nav-links {
-  display: none;
-  list-style: none;
-  align-items: center;
-  justify-content: center;
-}
-
-.links-btn{
-  cursor: grab ;
-  background: none;
-  align-items: center;
-  justify-content: center;
-}
-
-.searchform{
-  display:flex;
-} 
-
-
 @media screen and (min-width: 500px) {
 .nav{
   height: 5rem;
