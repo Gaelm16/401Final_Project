@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import LoginForm from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPW';
+import DashBoard from './Dashboard';
 
 const Root = () => {
 
@@ -11,6 +12,7 @@ const Root = () => {
       <div>
         <Navbar />
         <Routes>
+            <Route exact path="/dashboard" element={<DashBoard/> }/>
             <Route exact path="/login" element={<LoginForm/> }/>
             <Route exact path="/register" element={<Register/> }/>
             <Route exact path="/forgotpassword" element={<ForgotPassword/>}/>

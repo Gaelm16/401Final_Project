@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router';
-import Navbar from './Navbar';
+import { useNavigate } from 'react-router';
 import { AuthContext } from '../UserContext';
 import axios from 'axios';
 axios.defaults.withCredentials = true;
@@ -11,28 +11,19 @@ const Register = () => {
     const [retypePassWord, setRetypePassWord] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
+    const [successfulRegisterModal, setSuccessfulRegisterModal] = useState(false);
+    let navigate = useNavigate();
 
-    const {getLoggedIn} = useContext(AuthContext);
+    const { isLoggedIn } = useContext(AuthContext);
 
-    const signUp = async(e) => {
-        e.preventDefault()
-
-        try{
-            const data = {userName, passWord}
-            await axios.post('http://localhost:5173/register', data, {credential: 'include', withCredentials: true})
-            getLoggedIn();
-
-        } catch(err) {
-            console.log(err);
-        }
-
-        setUserEmail('');
-        setPassWord('');
+    if (isLoggedIn) {
+        return <Navigate to="/dashboard" replace />;
     }
 
-    // Function to check whether a new user's password meets the requirements
-    const validatePassword = (e) => {
+    const signUp = async (e) => {
         e.preventDefault();
+    
+        const validationErrors = [];
     
         if (passWord.length < 8) {
             validationErrors.push("Password must be at least 8 characters long.");
@@ -49,15 +40,36 @@ const Register = () => {
         if (!/[0-9]/.test(passWord)) {
             validationErrors.push("Password must contain at least one number (0-9).");
         }
-        if(passWord != retypePassWord){
-            validationErrors.push("Password does not match retyped password");
+        if (passWord !== retypePassWord) {
+            validationErrors.push("Password does not match retyped password.");
         }
-        
-        console.log(validationErrors);
-        if(validationErrors.length > 0) setShowModal(true);
-        // setValidationErrors([]);
-        return;
-      };
+    
+        if (validationErrors.length > 0) {
+            setValidationErrors(validationErrors); // Assuming you have this state set
+            setShowModal(true); // Show modal or some error UI
+            return;
+        }
+    
+        try {
+            const data = { userEmail, passWord };
+            await axios.post('http://localhost:4000/signup', data, {
+                credential: 'include', // fix: `credentials`, not `credential`
+                withCredentials: true
+            });
+
+            setSuccessfulRegisterModal(true);
+            setTimeout(() => setSuccessfulRegisterModal(false), 2000);
+            navigate('/login');
+
+            console.log('Sign-up successful');
+        } catch (err) {
+            console.log(err);
+        }
+    
+        setUserEmail('');
+        setPassWord('');
+        setRetypePassWord('');
+    };
     
   return (
      <div>
@@ -92,7 +104,7 @@ const Register = () => {
                         />
                 </div>
 
-                <button onClick={validatePassword}>Sign Up</button>
+                <button onClick={signUp}>Sign Up</button>
 
                 <div className='ex-links'>
                      <p>Already have an account? <Link to='/login'>Here</Link></p>
@@ -119,6 +131,11 @@ const Register = () => {
                             setValidationErrors([])} 
                         }>Close</button>
                     </div>
+                </div>
+            )}
+            {successfulRegisterModal && (
+                <div className="success-modal">
+                    Successfully Registered!
                 </div>
             )}
         </div>  

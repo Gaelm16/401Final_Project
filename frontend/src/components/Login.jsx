@@ -1,38 +1,37 @@
 import { useState, useContext } from 'react';
 import {Link, Navigate} from 'react-router';
-import Navbar from './Navbar';
 import { AuthContext } from '../UserContext';
+import axios from 'axios';
 
 const LoginForm = () => {
     const [userEmail, setUserEmail] = useState('');
-    const [passWord, setPassWord] = useState('');
+    const [password, setPassWord] = useState('');
 
-    const {isLoggedIn, setIsLoggedin, getloggedIn, user, setUser} = useContext(AuthContext);
+    const {isLoggedIn, getloggedIn, user, setUser} = useContext(AuthContext);
 
-    // const login = async(e) => {
-    //     e.preventDefault();
-    //         try{
-    //             let { data } = await axios.post('http://localhost:5173/', {userEmail, passWord});
-    //             setUser(data.result);
-    //             getloggedIn();
-    
-    //         } catch(err){
-    //             console.log('there is an error', err);
-    //         }
+    if (isLoggedIn) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
-    //     setUserEmail('');
-    //     setpassWord('');
-    
-    // }
-
-    // if(loggedIn){
-    //     return (<Navigate to='/'/>);
-    // }
-
-    const login = (e) => {
+    const login = async(e) => {
         e.preventDefault();
-        console.log(isLoggedIn);
-        console.log(user);
+            try{
+                let { data } = await axios.post('http://localhost:4000/login', {userEmail, password});
+                setUser(data.result);
+                console.log(data.result)
+                console.log(data);
+                getloggedIn();
+    
+            } catch(err){
+                console.log('there is an error', err);
+            }
+
+        setUserEmail('');
+        setPassWord('');
+    }
+
+    if(isLoggedIn){
+        return (<Navigate to='/dashboard'/>);
     }
 
     return(
@@ -53,13 +52,11 @@ const LoginForm = () => {
                         <input 
                         type='text'
                         className='form-input'
-                        value={passWord}
+                        value={password}
                         placeholder='Password'
                         onChange={((e) => setPassWord(e.target.value))}
                         />
                 </div>
-{/* 
-                <button onClick={login}>Login</button> */}
 
             <button onClick={login}>Login</button>
 
@@ -70,10 +67,6 @@ const LoginForm = () => {
                     <p>Forgot Password<Link to='/forgotpassword'>Forgot Password</Link></p>
                 </div>
             </form>
-
-                {/* <div className='register-link'>
-                    <p>Don't have an account sign up? <Link to='/register' className='links-btn'>Here</Link></p>
-                </div> */}
         </div>
     </div>
     )

@@ -5,23 +5,13 @@ import { AuthContext } from '../UserContext';
 
 const Navbar = () => {
 
-    const {loggedIn, logOut} = useContext(AuthContext);
+    const {isLoggedIn, logOut} = useContext(AuthContext);
 
     return (
-        <nav >
+    
+        <nav>
            <Link to='/' className='title'> Forensic Audit System</Link>
-           <ul>
-                <li>
-                    <Link to='/login'>
-                        Login
-                    </Link>
-                </li>
-                <li>
-                    <Link to='/register' >
-                        Register
-                    </Link>
-                </li>
-                {loggedIn === false && (
+                {isLoggedIn === false && (
                     <ul>
                         <li>
                             <Link to='/login' >
@@ -35,14 +25,13 @@ const Navbar = () => {
                         </li>
                     </ul>
                 )}
-                {loggedIn === true && (
+                {isLoggedIn === true && (
                     <ul> 
-                        <li>
-                            <button className='links-btn' onClick={() => logOut()}>Log Out</button>
-                        </li>
+                        {/* <li>
+                            <button onClick={() => logOut()}>Logout</button>
+                        </li> */}
                     </ul>
                  )}
-            </ul>
         </nav>
     )
 }

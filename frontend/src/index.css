@@ -198,3 +198,22 @@ nav ul li {
   border-radius: 0.5rem;
 }
 
+/* SUCESSFUL MODAL MODAL */
+.success-modal {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #38a169; /* Green background */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 1000;
+}
+
+.success-modal.hide {
+  opacity: 0;
+}
+
