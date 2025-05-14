@@ -1,7 +1,18 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const useragent = require('useragent')
 const UserModel = require("../models/userModel");
 const logInAttemptModel = require('../models/loginAttempt');
+
+//generates token for new user
+const generatetoken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET) ;
+}
+
+function getuserfromToken(token){
+    const userInfo = jwt.verify(token, process.env.JWT_SECRET);
+    return UserModel.findById(userInfo.id);
+}
 
 const login = async (req, res) => {
     try{
@@ -17,23 +28,39 @@ const login = async (req, res) => {
 
         if(!passwordMatch){
             return res.status(403)
-                .json({message: 'wrong password', success: false})
+                .json({message: 'wrong password', success: false});
         }
 
         
-        // const jwtToken = jwt.sign(
-        //     { userEmail: User.userEmail, _id: User._id },
-        //     process.env.JWT_SECRET,
-        //     { expiresIn: '24h' }
-        // )
+        const jwtToken = generatetoken({ _id: User._id });
+
+        res.cookie('token', jwtToken, {
+            httpOnly: true,
+            // maxAge: 3600000 // 1 hour
+          });
 
         //create successfull login attempt data
         let newlogin = await new logInAttemptModel({user: User._id, loginTime: new Date(), logOutTime: null});
         newlogin = await newlogin.populate("user", "userEmail");
         await newlogin.save();
 
+        // const agent = useragent.parse(req.headers['user-agent']);
+        // const deviceInfo = {
+        //   browser: agent.toAgent(),
+        //   os: agent.os.toString(),
+        //   platform: agent.device.toString(),
+        // };
+
+        // console.log(deviceInfo)
+
         res.status(200)
-            .json({message: 'login successfull', success: true});
+            .json({
+                message: 'login successfull', 
+                success: true,
+                token: jwtToken,
+                result: User
+                // device: deviceInfo
+            });
 
 
     }catch(e){
@@ -50,19 +77,19 @@ const login = async (req, res) => {
 const signUp = async (req, res) => {
     try{
 
-        const {userEmail, password} = req.body;
+        const {userEmail, passWord} = req.body;
         const user = await UserModel.findOne({userEmail});
 
         if(user){
-            res.status(409)
-                .json({message: 'user exists', success: false});
+            return res.status(409)
+            .json({message: 'user exists', success: false});
         }
 
-        const newUser = new UserModel({userEmail, password});
-        newUser.password = await bcrypt.hash(password, 10);
+        const newUser = new UserModel({userEmail, passWord});
+        newUser.password = await bcrypt.hash(passWord, 10);
         await newUser.save();
 
-        res.status(201)
+        return res.status(201)
         .json({
             message: "signup successfull",
             success: true
@@ -70,7 +97,7 @@ const signUp = async (req, res) => {
 
     }catch(e){
         console.log(e);
-        res.status(500)
+        return res.status(500)
         .json({
             message: "Internal server errror",
             success: false
@@ -79,11 +106,35 @@ const signUp = async (req, res) => {
 }
 
 const signOut = async (req, res) => {
-    try{
+    try {
+        res.cookie('token', '', {
+            httpOnly: true,
+            expires: new Date(0),
+        });
 
-    }catch(e){
-        console.log(e);
+        res.status(200).json({
+            message: "Signed out successfully",
+            success: true
+        });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getLoggedIn = async (req,res) => {
+    try{
+        const token = req.cookies.token;
+
+        if(!token) {
+            return res.json(false);
+        }
+
+        getuserfromToken(token);
+        res.json({status: true, data: token})
+    } catch(err) {
+        res.json(false)
     }
 }
 
-module.exports = {signUp, login};
+module.exports = {signUp, login, signOut, getLoggedIn};
